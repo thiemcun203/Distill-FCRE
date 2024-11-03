@@ -482,11 +482,12 @@ class EncodingModel_LLM2Vec(nn.Module):
         self.tokenizer = AutoTokenizer.from_pretrained(
                 "McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp",
             )
+        self.dtype = torch.bfloat16 if config.dtype == 'bfloat16' else torch.float32
         self.encoder = LLM2Vec.from_pretrained(
             "McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp",
             peft_model_name_or_path="McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised",
             device_map="cuda" if torch.cuda.is_available() else "cpu",
-            torch_dtype=torch.bfloat16 if config.dtype == 'bfloat16' else torch.float32,
+            torch_dtype=self.dtype,
             merge_peft=True,
             pooling_mode="mean",
             max_length=256,
@@ -500,7 +501,7 @@ class EncodingModel_LLM2Vec(nn.Module):
         self.vector_linear = nn.Sequential(
             nn.Linear(in_features=4096, out_features=768),
             nn.Tanh()
-        ).to('cuda', dtype=torch.bfloat16)
+        ).to('cuda', dtype=self.dtype)
             
     def initialize_peft(
         self,
