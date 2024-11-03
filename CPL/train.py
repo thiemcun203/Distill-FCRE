@@ -118,8 +118,8 @@ class Manager(object):
         # softmax = nn.Softmax(dim=0)
         dtype = torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32
         ot_loss = OTLoss(
-            input_dim=4096,
-            output_dim=768,
+            # input_dim=4096,
+            # output_dim=768,
             distance_type='cosine',
             weight_type='norm',
             sinkhorn_epsilon=0.1,

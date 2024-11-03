@@ -57,8 +57,8 @@ def to_numpy_safe(tensor):
 
 class OTLoss(nn.Module):
     def __init__(self, 
-                 input_dim: int = 4096,
-                 output_dim: int = 768,
+                #  input_dim: int = 4096,
+                #  output_dim: int = 768,
                  distance_type: Literal['cosine', 'l2'] = 'cosine',
                  weight_type: Literal['uniform', 'norm'] = 'uniform',
                  sinkhorn_epsilon: float = 0.1,
@@ -71,10 +71,10 @@ class OTLoss(nn.Module):
         self.device = device if device is not None else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.dtype = dtype if dtype is not None else torch.float32
         
-        self.vec_transform = nn.Sequential(
-            nn.Linear(input_dim, output_dim),
-            nn.Tanh()
-        ).to(device=self.device, dtype=self.dtype)
+        # self.vec_transform = nn.Sequential(
+        #     nn.Linear(input_dim, output_dim),
+        #     nn.Tanh()
+        # ).to(device=self.device, dtype=self.dtype)
         
         self.sinkhorn_epsilon = sinkhorn_epsilon
         self.sinkhorn_max_iter = sinkhorn_max_iter
@@ -190,8 +190,8 @@ def test_ot_loss():
     print(f"Student outputs shape: {student_outputs.shape}")
     
     ot_loss = OTLoss(
-        input_dim=teacher_dim,
-        output_dim=student_dim,
+        # input_dim=teacher_dim,
+        # output_dim=student_dim,
         distance_type='cosine',
         weight_type='norm',
         sinkhorn_epsilon=0.1,
