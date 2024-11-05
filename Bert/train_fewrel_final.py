@@ -285,14 +285,14 @@ class Manager(object):
                     
                     loss5 = ot_loss(hidden, hidden2)
 
-                    loss = loss1 + 1*loss2 + 0.25*loss3 + 0.25*loss4 + 0.5*loss5
+                    loss = loss1 + 1*loss2 + 0.25*loss3 + 0.25*loss4 + 1*loss5
                     
                     wandb.log({'OT_loss': loss5, 'contrastive_loss': loss1, 'total_loss': loss, 'MI_loss': loss2, 'triplet_loss': loss3, 'triplet_loss2': loss4})
 
                 else:
                     loss1 = self.moment.contrastive_loss(hidden, labels, is_memory, des =rep_des, relation_2_cluster = relation_2_cluster)
                     loss5 = ot_loss(hidden, hidden2)
-                    loss = loss1 + 1*loss2 + 0.5*loss5
+                    loss = loss1 + 1*loss2 + 1*loss5
                     wandb.log({'OT_loss': loss5, 'contrastive_loss': loss1, 'total_loss': loss, 'MI_loss': loss2})
             
                 loss.backward()
