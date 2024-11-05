@@ -141,12 +141,12 @@ class Manager(object):
                 # print(hidden.dtype, hidden2.dtype)
                 # print(hidden.shape, hidden2.shape)
                 loss2 = ot_loss(hidden, hidden2)
-                loss = 0.8 * loss + loss2
+                total_loss = 0.8 * loss + loss2
 
-                wandb.log({'OT_loss': loss2, 'contrastive_loss': loss, 'total_loss': loss})
+                wandb.log({'OT_loss': loss2, 'contrastive_loss': loss, 'total_loss': total_loss})
 
                 optimizer.zero_grad()
-                loss.backward()
+                total_loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
                 # update moment
@@ -157,9 +157,9 @@ class Manager(object):
                     self.moment.update(ind, hidden.detach().cpu().data, is_memory=False)
                 # print
                 if is_memory:
-                    sys.stdout.write('MemoryTrain:  epoch {0:2}, batch {1:5} | loss: {2:2.7f}'.format(i, batch_num, loss.item()) + '\r')
+                    sys.stdout.write('MemoryTrain:  epoch {0:2}, batch {1:5} | loss: {2:2.7f}'.format(i, batch_num, total_loss.item()) + '\r')
                 else:
-                    sys.stdout.write('CurrentTrain: epoch {0:2}, batch {1:5} | loss: {2:2.7f}'.format(i, batch_num, loss.item()) + '\r')
+                    sys.stdout.write('CurrentTrain: epoch {0:2}, batch {1:5} | loss: {2:2.7f}'.format(i, batch_num, total_loss.item()) + '\r')
                 sys.stdout.flush() 
         print('')             
 

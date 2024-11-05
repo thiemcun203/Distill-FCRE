@@ -15,7 +15,7 @@ class EncodingModel(nn.Module):
             self.encoder = BertModel.from_pretrained(config.bert_path, torch_dtype=torch.bfloat16 if config.dtype == 'bfloat16' else torch.float32).to(config.device)
             self.lm_head = BertForMaskedLM.from_pretrained(config.bert_path, torch_dtype=torch.bfloat16 if config.dtype == 'bfloat16' else torch.float32).to(config.device).cls
         elif config.model == 'roberta':
-            self.encoder = RobertaModel.from_pretrained(config.roberta_path).to(config.device)
+            self.encoder = RobertaModel.from_pretrained(config.roberta_path, torch_dtype=torch.bfloat16 if config.dtype == 'bfloat16' else torch.float32).to(config.device)
             self.encoder.resize_token_embeddings(config.vocab_size)
         if config.tune == 'prompt':
             for param in self.encoder.parameters():
