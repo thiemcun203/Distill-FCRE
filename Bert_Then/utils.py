@@ -28,8 +28,8 @@ class Moment:
         encoder.eval()
         datalen = len(dataset)
         if not is_memory:
-            self.features = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16)
-            self.features_des = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16)
+            self.features = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32)
+            self.features_des = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32)
 
             data_loader = get_data_loader_BERT(self.config, dataset) # shuffle=False
             lbs = []
@@ -63,8 +63,8 @@ class Moment:
             self.labels = lbs
         else:
             self.mem_samples = dataset
-            self.mem_features = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16)
-            self.mem_features_des = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16)
+            self.mem_features = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32)
+            self.mem_features_des = torch.zeros(datalen, self.config.encoder_output_size if not is_llm  else self.config.llm_encoder_output_size, dtype=torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32)
             data_loader = get_data_loader_BERT(self.config, dataset) # shuffle=False
             lbs = []
             for step, (instance, labels, ind) in enumerate(data_loader):
@@ -132,7 +132,7 @@ class Moment:
 
         num = len(cinds)
         feats = self.mem_features
-        centroids = torch.zeros((num, feats.size(1)), dtype=torch.float32, device=feats.device)
+        centroids = torch.zeros((num, feats.size(1)), dtype=torch.float32, device=feats.device).to(torch.bfloat16 if self.config.dtype == 'bfloat16' else torch.float32)
         for i, c in enumerate(cinds):
             ind = np.where(self.mem_labels.cpu().numpy() == c)[0]
             centroids[i, :] = feats[ind, :].mean(dim=0)
