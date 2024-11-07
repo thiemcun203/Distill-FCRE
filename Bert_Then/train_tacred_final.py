@@ -10,7 +10,7 @@ from sklearn.cluster import KMeans
 from config import Config
 import torch.nn.functional as F
 from sklearn.cluster import AgglomerativeClustering
-
+import gc
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -518,6 +518,7 @@ class Manager(object):
 
 
         torch.cuda.empty_cache()
+        gc.collect()
         # save model
         # torch.save(encoder.state_dict(), "./checkpoints/encoder.pth")
         return total_acc_num, total_acc_num1, total_acc_num2
@@ -595,6 +596,7 @@ if __name__ == '__main__':
         acc_list1.append(acc1)
         aac_list2.append(aac2)
         torch.cuda.empty_cache()
+        gc.collect()
     
     accs = np.array(acc_list)
     ave = np.mean(accs, axis=0)
